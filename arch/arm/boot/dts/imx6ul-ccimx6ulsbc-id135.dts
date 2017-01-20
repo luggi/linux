@@ -127,6 +127,8 @@
 	status = "okay";
 };
 
+
+
 /* USDHC2 (eMMC, conflicts with microSD) */
 //&usdhc2 {
 //	pinctrl-assert-gpios = <&gpio5 1 GPIO_ACTIVE_HIGH>;

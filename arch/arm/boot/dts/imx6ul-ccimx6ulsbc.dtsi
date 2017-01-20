@@ -37,6 +37,15 @@
 	};
 };
 
+&csi {
+	status = "okay";
+	port {
+		csi1_ep: endpoint {
+			remote-endpoint = <&ov7740_ep>;
+		};
+	};
+};
+
 /* ECSPI1 */
 &ecspi1 {
 	fsl,spi-num-chipselects = <1>;
@@ -103,7 +112,7 @@
 	status = "disabled";
 };
 
-&i2c1 {
+&i2c1 {    
 	/*
 	 * Fusion display touch controller has I2C address 0x10
 	 * but since the audio chip on the SBC also has this address
@@ -118,6 +127,26 @@
 		interrupt-parent = <&gpio5>;
 		interrupts = <2 IRQ_TYPE_EDGE_RISING>;
 		status = "disabled";
+	};
+    
+    ov7740: ov7740@21 {
+		compatible = "ovti,ov7740";
+		reg = <0x21>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_csi1>;
+		clocks = <&clks IMX6UL_CLK_CSI>;
+		clock-names = "csi_mclk";
+		//pwn-gpios = <&mca_gpio 6 1>;
+		//rst-gpios = <&mca_gpio 5 0>;
+		csi_id = <0>;
+		mclk = <24000000>;
+		mclk_source = <0>;
+		status = "okay";
+		port {
+			ov7740_ep: endpoint {
+				remote-endpoint = <&csi1_ep>;
+			};
+		};
 	};
 };
 
@@ -442,6 +471,23 @@
 				MX6UL_PAD_CSI_DATA07__USDHC2_DATA7	0x17059
 				/* Mux selector between eMMC/SD# */
 				MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01	0x79
+			>;
+		};
+        
+		pinctrl_csi1: csi1grp {
+			fsl,pins = <
+				MX6UL_PAD_CSI_MCLK__CSI_MCLK		0x1b088
+				MX6UL_PAD_CSI_PIXCLK__CSI_PIXCLK	0x1b088
+				MX6UL_PAD_CSI_VSYNC__CSI_VSYNC		0x1b088
+				MX6UL_PAD_CSI_HSYNC__CSI_HSYNC		0x1b088
+				MX6UL_PAD_CSI_DATA00__CSI_DATA02	0x1b088
+				MX6UL_PAD_CSI_DATA01__CSI_DATA03	0x1b088
+				MX6UL_PAD_CSI_DATA02__CSI_DATA04	0x1b088
+				MX6UL_PAD_CSI_DATA03__CSI_DATA05	0x1b088
+				MX6UL_PAD_CSI_DATA04__CSI_DATA06	0x1b088
+				MX6UL_PAD_CSI_DATA05__CSI_DATA07	0x1b088
+				MX6UL_PAD_CSI_DATA06__CSI_DATA08	0x1b088
+				MX6UL_PAD_CSI_DATA07__CSI_DATA09	0x1b088
 			>;
 		};
 
